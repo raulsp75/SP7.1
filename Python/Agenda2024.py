@@ -1,72 +1,76 @@
 def mostrar_menu():
-    print("\nAGENDA TELEFÓNICA")
-    print("1. Añadir/Modificar Contacto")
-    print("2. Buscar Contacto")
-    print("3. Borrar Contacto")
-    print("4. Listar Contactos")
+    print("============================")    
+    print("AGENDA TELEFÓNICA")
+    print("1. Añadir/Modificar contacto")
+    print("2. Buscar contacto")
+    print("3. Borrar contacto")
+    print("4. Listar contactos")
     print("5. Salir")
-    
-def anadir_modificar_contacto(agenda):
-    nombre = input("Ingrese el nombre del contacto: ").strip()
+
+def agregar_modificar(agenda, nombre, telefono):
+    agenda[nombre] = telefono
+
+def buscar(agenda, cadena):
+    return {nombre: telefono for nombre, telefono in agenda.items() if nombre.startswith(cadena)}
+
+def borrar(agenda, nombre):
     if nombre in agenda:
-        print(f"El número actual de {nombre} es: {agenda[nombre]}")
-        opcion = input("¿Desea modificarlo? (s/n): ").strip().lower()
-        if opcion == 's':
-            telefono = input("Ingrese el nuevo número: ").strip()
-            agenda[nombre] = telefono
-            print("Contacto actualizado.")
-    else:
-        telefono = input("Ingrese el número de teléfono: ").strip()
-        agenda[nombre] = telefono
-        print("Contacto añadido.")
+        del agenda[nombre]
+        return True
+    return False
 
-def buscar_contacto(agenda):
-    cadena = input("Ingrese el inicio del nombre a buscar: ").strip()
-    resultados = {nombre: telefono for nombre, telefono in agenda.items() if nombre.startswith(cadena)}
-    if resultados:
-        for nombre, telefono in resultados.items():
-            print(f"{nombre}: {telefono}")
-    else:
-        print("No se encontraron contactos con esa búsqueda.")
+def listar(agenda):
+    return agenda
 
-def borrar_contacto(agenda):
-    nombre = input("Ingrese el nombre del contacto a eliminar: ").strip()
-    if nombre in agenda:
-        opcion = input(f"¿Está seguro de eliminar a {nombre}? (s/n): ").strip().lower()
-        if opcion == 's':
-            del agenda[nombre]
-            print("Contacto eliminado.")
-        else:
-            print("Operación cancelada.")
-    else:
-        print("El contacto no existe en la agenda.")
+def ejecutar_agenda():
+    agenda = {}  # Diccionario para almacenar contactos
+    opcion = None  # Inicializar la opción
 
-def listar_contactos(agenda):
-    if agenda:
-        print("\nLista de Contactos:")
-        for nombre, telefono in agenda.items():
-            print(f"{nombre}: {telefono}")
-    else:
-        print("La agenda está vacía.")
-
-def main():
-    agenda = {}
-    while True:
+    while opcion != "5":  # Se repite hasta que el usuario elija salir
         mostrar_menu()
-        opcion = input("Seleccione una opción: ").strip()
-        if opcion == '1':
-            anadir_modificar_contacto(agenda)
-        elif opcion == '2':
-            buscar_contacto(agenda)
-        elif opcion == '3':
-            borrar_contacto(agenda)
-        elif opcion == '4':
-            listar_contactos(agenda)
-        elif opcion == '5':
-            print("Saliendo de la agenda...")
-            break
-        else:
-            print("Opción no válida. Inténtelo de nuevo.")
+        opcion = input("Seleccione una opción (1-5): ")
 
-if __name__ == "__main__":
-    main()
+        if opcion == "1":  # Añadir/Modificar
+            nombre = input("Ingrese el nombre: ").strip().capitalize()
+            if nombre in agenda:
+                print(f"El número actual de {nombre} es: {agenda[nombre]}")
+                modificar = input("¿Desea modificarlo? (s/n): ").strip().lower()
+                if modificar == "s":
+                    telefono = input("Ingrese el nuevo número: ").strip()
+                    agregar_modificar(agenda, nombre, telefono)
+            else:
+                telefono = input("Ingrese el número: ").strip()
+                agregar_modificar(agenda, nombre, telefono)
+
+        elif opcion == "2":  # Buscar
+            cadena = input("Ingrese el inicio del nombre a buscar: ").strip().capitalize()
+            resultados = buscar(agenda, cadena)
+            if resultados:
+                for nombre, telefono in resultados.items():
+                    print(f"{nombre}: {telefono}")
+            else:
+                print("No se encontraron contactos.")
+
+        elif opcion == "3":  # Borrar
+            nombre = input("Ingrese el nombre a borrar: ").strip().capitalize()
+            if borrar(agenda, nombre):
+                print(f"{nombre} ha sido eliminado.")
+            else:
+                print("El contacto no existe.")
+
+        elif opcion == "4":  # Listar
+            contactos = listar(agenda)
+            if contactos:
+                for nombre, telefono in contactos.items():
+                    print(f"{nombre}: {telefono}")
+            else:
+                print("La agenda está vacía.")
+
+        elif opcion == "5":  # Salir
+            print("Saliendo de la agenda.")
+
+        else:
+            print("Opción no válida.")
+
+# Llamar a la función para ejecutar la agenda
+ejecutar_agenda()
