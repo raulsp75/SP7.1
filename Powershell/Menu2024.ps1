@@ -87,7 +87,8 @@ function Crear-Volumen {
 }
 
 do {
-    Write-Host "\nMenú de Opciones:" -ForegroundColor Cyan
+    Write-Host "=========================================="
+    Write-Host "Menú de Opciones:" -ForegroundColor Cyan
     Write-Host "1. Mostrar información del dominio"
     Write-Host "2. Crear nueva Unidad Organizativa"
     Write-Host "3. Ver miembros de una Unidad Organizativa"
